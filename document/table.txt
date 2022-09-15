@@ -1,0 +1,108 @@
+create database grocery;
+
+use grocery;
+
+create table shelf(
+shelf_id varchar(10) not null,
+amount integer not null,
+primary key(shelf_id)
+);
+
+create table eposition(
+pos_id varchar(10) not null,
+pos_name varchar(20) not null,
+primary key(pos_id)
+);
+
+create table product_type(
+type_id varchar(2) not null,
+type_name varchar(32) not null,
+primary key(type_id)
+);
+
+create table customer_level(
+level_id varchar(1) not null,
+level_name varchar(20) not null,
+primary key(level_id)
+);
+
+create table employee(
+emp_id varchar(10) not null,
+fname varchar(50) not null,
+lname varchar(50) not null,
+phone varchar(10) not null,
+address varchar(100) not null,
+wage real not null,
+sales real not null,
+pos_id varchar(10) not null,
+primary key(emp_id),
+foreign key(pos_id) references eposition(pos_id)
+);
+
+create table customer(
+customer_id varchar(10) not null,
+fname varchar(50) not null,
+lname varchar(50) not null,
+phone varchar(10) not null,
+address varchar(100),
+level_id varchar(1),
+primary key(customer_id),
+foreign key(level_id) references customer_level(level_id)
+);
+
+create table product(
+product_id varchar(3) not null,
+type_id varchar(2) not null,
+product_name varchar(32) not null,
+price real not null,
+shelf_id varchar(2) not null,
+primary key(product_id),
+foreign key(type_id) references product_type(type_id),
+foreign key(shelf_id) references shelf(shelf_id)
+);
+
+
+create table product_lot(
+lot_no varchar(4) not null,
+product_id varchar(3) not null,
+emp_id varchar(10) not null,
+lot_date date not null,
+expired_date date not null,
+product_amount integer not null,
+product_status varchar(10) not null,
+primary key(lot_no,product_id),
+foreign key(product_id) references product(product_id),
+foreign key(emp_id) references employee(emp_id)
+);
+
+create table sale(
+sale_id varchar(6) not null,
+sale_date date not null,
+customer_id varchar(10) not null,
+emp_id varchar(10) not null,
+primary key(sale_id),
+foreign key(customer_id) references customer(customer_id),
+foreign key(emp_id) references employee(emp_id)
+);
+
+
+create table sale_detail(
+lot_no varchar(4) not null,
+product_id varchar(3) not null,
+sale_id varchar(6) not null,
+sale_amount integer not null,
+primary key(lot_no,product_id,sale_id),
+foreign key(lot_no,product_id) references product_lot(lot_no,product_id),
+foreign key(sale_id) references sale(sale_id)
+);
+
+create table payment(
+pay_id varchar(12) not null,
+sale_id varchar(6) not null,
+status varchar(32) not null,
+type varchar(10) not null,
+primary key(pay_id),
+foreign key(sale_id) references sale(sale_id)
+);
+
+
